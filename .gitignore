@@ -1,0 +1,5 @@
+.git/
+__pycache__/
+*.py[co]
+prod-docker-compose.yml
+urlfilter/settings.py

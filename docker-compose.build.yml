@@ -1,0 +1,34 @@
+version: '2.4'
+
+networks:
+  default:
+    external:
+      name: whirlpool-net
+
+services:
+
+  base:
+    image: python:3.7.4-buster
+    command: bash -c "useradd --create-home --shell /bin/bash whirlpool && chown -R whirlpool:whirlpool /home/whirlpool/whirlpool-urlfilter"
+    volumes:
+      - .:/home/whirlpool/whirlpool-urlfilter
+      - wh-urlfilter:/usr/local/lib/python3.7/site-packages
+    working_dir: /home/whirlpool/whirlpool-urlfilter
+    environment:
+      - PY_ENV=development
+    networks:
+      - default
+
+  install:
+    extends:
+      service: base
+    command: pip3 install -r requirements.txt
+
+  quick-up:
+    extends:
+      service: base
+    command: python3 ./urlfilter/main.py
+
+volumes:
+  wh-urlfilter:
+    external: true

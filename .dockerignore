@@ -1,0 +1,9 @@
+.git/
+.github/
+
+.gitignore
+__pycache__
+*.py[co]
+.gitmodules
+
+urlfilter/settings.example.py
