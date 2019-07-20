@@ -17,7 +17,7 @@ RUN chown -R whirlpool:whirlpool $WH_URLFILTER_ROOT
 COPY .pylintrc ./
 COPY requirements.txt ./
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY scripts/ scripts/
 COPY logs/ logs/
