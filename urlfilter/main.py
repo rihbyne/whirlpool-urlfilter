@@ -3,6 +3,7 @@ import sys
 
 # dependency libs
 import pika
+import sqlalchemy
 
 # user libs
 import utils
@@ -10,14 +11,15 @@ from consumer import consume_from_parser_queue
 
 def main():
     # authenticate to RMQ, POSTGRES, and listen for messages on a direct queue
+
     try:
+        urlfilter_session = utils.auth_db()
         conn, channel = utils.auth_rmq()
-        utils.auth_db()
-        consume_from_parser_queue(channel)
+        consume_from_parser_queue(channel, urlfilter_session)
         try:
             channel.start_consuming()
         except KeyboardInterrupt as keyevent:
-            print('caught key interrupt {}, closing connection'.format(keyevent))
+            print('caught key interrupt {}, closing rmq connection'.format(keyevent))
             channel.stop_consuming()
             conn.close()
     except LookupError as lookup_err:
@@ -31,6 +33,10 @@ def main():
         print("Caught a channel error: {}, stopping...".format(amqperror))
     except pika.exceptions.AMQPConnectionError as allother:
         print("Caught other misc AMQP error : {}, stopping...".format(allother))
+    except sqlalchemy.exc.SQLAlchemyError as sqlerr:
+        print("Caught SQLAlchemy error : {}, stopping...".format(sqlerr))
+
+
 
 if __name__ == '__main__':
     print("executing %s" % __file__)

@@ -1,23 +1,33 @@
 # sys imports
 import pickle
+from functools import partial
 
 # local imports
 import publisher
 
 # whirlpool-urlfilter consume
-def consume_from_parser_queue(channel):
+def consume_from_parser_queue(channel, session):
     print('invoked {0}'.format(consume_from_parser_queue.__name__))
-    channel.basic_consume('urlfilter.q', on_msg_callback)
+    on_msg_callback_with_session = partial(on_msg_callback, db_session=session)
+    channel.basic_consume('urlfilter.q', on_msg_callback_with_session)
     print('consumer listening for messages on urlfilter.q')
 
-def on_msg_callback(channel, method_frame, header_frame, body):
+def on_msg_callback(channel, method_frame, header_frame, body, db_session):
      print('delivery tag {}'.format(method_frame.delivery_tag))
      print('header_frame {}'.format(header_frame))
      print('msg body {}'.format(body))
 
-     # do some processing
+     # do some processing with dbsession
      #
      #
+     try:
+         # db_session.query(FooBar).update({"x": 5})
+         db_session.commit()
+         print('work processed. session committed')
+     except:
+         print('db session failed')
+         db_session.rollback()
+         raise
 
      # finally send message by call publisher
      msg = {
