@@ -10,7 +10,7 @@ def publish_to_due_queue(channel, msg):
                               routing_key='urlfilter_p.to.due_c',
                               body=msg,
                               properties=pika.BasicProperties(content_type='application/json',
-                                                              delivery_mode=1),
+                                                              delivery_mode=2),
                               mandatory=True)
         pub_confirm = True
     except pika.exceptions.UnroutableError as push_fail_err:

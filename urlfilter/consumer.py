@@ -1,5 +1,5 @@
 # sys imports
-import pickle
+import json
 from functools import partial
 
 # local imports
@@ -36,7 +36,7 @@ def on_msg_callback(channel, method_frame, header_frame, body, db_session):
          "3": [{"url": "http://ex3.com/xyz/def", "type": "nc"}]
      };
 
-     bmsg = pickle.dumps(msg)
+     bmsg = json.dumps(msg).encode('utf-8')
      pub_confirm = publisher.publish_to_due_queue(channel, bmsg)
      if pub_confirm:
          channel.basic_ack(delivery_tag=method_frame.delivery_tag)
