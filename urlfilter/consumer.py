@@ -3,19 +3,22 @@ import json
 from functools import partial
 
 # local imports
+import utils
 import publisher
+
+log = utils.UrlfilterLogging().getLogger()
 
 # whirlpool-urlfilter consume
 def consume_from_parser_queue(channel, session):
-    print('invoked {0}'.format(consume_from_parser_queue.__name__))
+    log.info('invoked {0}'.format(consume_from_parser_queue.__name__))
     on_msg_callback_with_session = partial(on_msg_callback, db_session=session)
     channel.basic_consume('urlfilter.q', on_msg_callback_with_session)
-    print('consumer listening for messages on urlfilter.q')
+    log.info('consumer listening for messages on urlfilter.q')
 
 def on_msg_callback(channel, method_frame, header_frame, body, db_session):
-     print('delivery tag {}'.format(method_frame.delivery_tag))
-     print('header_frame {}'.format(header_frame))
-     print('msg body {}'.format(body))
+     log.info('delivery tag {}'.format(method_frame.delivery_tag))
+     log.info('header_frame {}'.format(header_frame))
+     log.info('msg body {}'.format(body))
 
      # do some processing with dbsession
      #
@@ -23,9 +26,9 @@ def on_msg_callback(channel, method_frame, header_frame, body, db_session):
      try:
          # db_session.query(FooBar).update({"x": 5})
          db_session.commit()
-         print('work processed. session committed')
+         log.info('work processed. session committed')
      except:
-         print('db session failed')
+         log.info('db session failed')
          db_session.rollback()
          raise
 
@@ -40,7 +43,7 @@ def on_msg_callback(channel, method_frame, header_frame, body, db_session):
      pub_confirm = publisher.publish_to_due_queue(channel, bmsg)
      if pub_confirm:
          channel.basic_ack(delivery_tag=method_frame.delivery_tag)
-         print('message from urlfilter.q acknowledged')
+         log.info('message from urlfilter.q acknowledged')
      else:
          channel.basic_nack(delivery_tag=method_frame.delivery_tag)
-         print('message from urlfilter.q acknowledgement failed')
+         log.error('message from urlfilter.q acknowledgement failed')
