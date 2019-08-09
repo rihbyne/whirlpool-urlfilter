@@ -1,26 +1,23 @@
 FROM python:3.7.4-buster as whirlpool-urlfilter-base
 
 ENV PYTHONDONTWRITEBYTECODE=1
-
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends netcat \
-  && rm -rf /var/lib/apt/lists/*
-
-RUN useradd --create-home --shell /bin/bash whirlpool
-
 ARG WH_URLFILTER_ROOT=/home/whirlpool/whirlpool-urlfilter
 WORKDIR $WH_URLFILTER_ROOT
 
-RUN chown -R whirlpool:whirlpool $WH_URLFILTER_ROOT
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends netcat \
+  && rm -rf /var/lib/apt/lists/* \
+  && useradd --create-home --shell /bin/bash whirlpool \
+  && chown -R whirlpool:whirlpool $WH_URLFILTER_ROOT
 
 # files necessary to build the project
 COPY .pylintrc ./
 COPY requirements.txt ./
 
-RUN pip3 install -r requirements.txt
+RUN mkdir logs/ \
+  && pip3 install -r requirements.txt
 
 COPY scripts/ scripts/
-COPY logs/ logs/
 COPY urlfilter/ urlfilter/
 
 # docker image for dev target

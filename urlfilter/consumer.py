@@ -9,28 +9,16 @@ import publisher
 log = utils.UrlfilterLogging().getLogger()
 
 # whirlpool-urlfilter consume
-def consume_from_parser_queue(channel, session):
+def consume_from_parser_queue(channel):
     log.info('invoked {0}'.format(consume_from_parser_queue.__name__))
-    on_msg_callback_with_session = partial(on_msg_callback, db_session=session)
+    on_msg_callback_with_session = partial(on_msg_callback)
     channel.basic_consume('urlfilter.q', on_msg_callback_with_session)
     log.info('consumer listening for messages on urlfilter.q')
 
-def on_msg_callback(channel, method_frame, header_frame, body, db_session):
+def on_msg_callback(channel, method_frame, header_frame, body):
      log.info('delivery tag {}'.format(method_frame.delivery_tag))
      log.info('header_frame {}'.format(header_frame))
      log.info('msg body {}'.format(body))
-
-     # do some processing with dbsession
-     #
-     #
-     try:
-         # db_session.query(FooBar).update({"x": 5})
-         db_session.commit()
-         log.info('work processed. session committed')
-     except:
-         log.info('db session failed')
-         db_session.rollback()
-         raise
 
      # finally send message by call publisher
      msg = {

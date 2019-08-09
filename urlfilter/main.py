@@ -14,9 +14,8 @@ log = utils.UrlfilterLogging().getLogger()
 def main():
     # authenticate to RMQ, POSTGRES, and listen for messages on a direct queue
     try:
-        urlfilter_session = utils.auth_db()
         conn, channel = utils.auth_rmq()
-        consume_from_parser_queue(channel, urlfilter_session)
+        consume_from_parser_queue(channel)
         try:
             channel.start_consuming()
         except KeyboardInterrupt as keyevent:
@@ -36,9 +35,6 @@ def main():
         log.error("Caught a channel error: {}, stopping...".format(amqperror))
     except pika.exceptions.AMQPConnectionError as allother:
         log.error("Caught other misc AMQP error : {}, stopping...".format(allother))
-    except sqlalchemy.exc.SQLAlchemyError as sqlerr:
-        log.error("Caught SQLAlchemy error : {}, stopping...".format(sqlerr))
-
 
 
 if __name__ == '__main__':

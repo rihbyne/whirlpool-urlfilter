@@ -8,7 +8,7 @@ dev-build:
 	docker build --no-cache -t whirlpool-urlfilter-dev:latest --target whirlpool-urlfilter-dev .
 
 prod-build:
-	docker build --no-cache -t whirlpool-urlfilter-prod:latest --target whirlpool-urlfilter-prod .
+	docker build -t whirlpool-urlfilter-prod:latest --target whirlpool-urlfilter-prod .
 
 dev-up:
 	docker-compose -f dev-docker-compose.yml up --build -d
@@ -27,3 +27,9 @@ push-dev:
 
 push-prod:
 	docker push rihbyne/whirlpool-urlfilter-prod:latest
+
+tag-dev:
+	docker tag whirlpool-urlfilter-dev:latest rihbyne/whirlpool-urlfilter-dev:latest
+
+tag-prod:
+	docker tag whirlpool-urlfilter-prod:latest rihbyne/whirlpool-urlfilter-prod:latest

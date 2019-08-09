@@ -1,5 +1,8 @@
 # dep libs
 import pika
+import utils
+
+log = utils.UrlfilterLogging().getLogger()
 
 # urlfilter publish
 def publish_to_due_queue(channel, msg):
