@@ -17,6 +17,6 @@ def publish_to_due_queue(channel, msg):
                               mandatory=True)
         pub_confirm = True
     except pika.exceptions.UnroutableError as push_fail_err:
-        log.error('Message publish could not be confirmed {0}'.format(push_fail_err))
+        log.error('Message publish to due.q could not be confirmed {0}'.format(push_fail_err))
 
     return pub_confirm
