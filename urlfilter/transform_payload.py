@@ -40,7 +40,7 @@ def add_abs_urls(contents):
 
                 transformed[rank].append(new_href_meta)
 
-        log.info('made urls absolute for origin {} {}'.format(origin))
+        log.info('made urls absolute for origin {}'.format(origin))
     except TypeError as attr_err:
         log.error('AttributeError {}'.format(attr_err))
 
