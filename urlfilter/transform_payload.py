@@ -32,11 +32,11 @@ def add_abs_urls(contents):
 
                 log.debug('transforming urls for rank {}'.format(rank))
 
-                uri = urlparse(href_meta.get("href"))
+                uri = urlparse(href_meta.get("url"))
 
                 if len(uri.scheme) == 0 or uri.hostname == None:
                     tmp_href = "{}{}".format(origin, uri.path)
-                    new_href_meta['href'] = tmp_href
+                    new_href_meta['url'] = tmp_href
 
                 transformed[rank].append(new_href_meta)
 
