@@ -35,8 +35,10 @@ def add_abs_urls(contents):
                 uri = urlparse(href_meta.get("url"))
 
                 if len(uri.scheme) == 0 or uri.hostname == None:
-                    tmp_href = "{}{}".format(origin, uri.path)
-                    new_href_meta['url'] = tmp_href
+                    if len(uri.query) != 0:
+                        new_href_meta['url'] = "{}{}?{}".format(origin, uri.path, uri.query)
+                    else:
+                        new_href_meta['url'] = "{}{}".format(origin, uri.path)
 
                 transformed[rank].append(new_href_meta)
 
